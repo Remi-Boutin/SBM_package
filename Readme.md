@@ -1,6 +1,6 @@
 ### SBM 
 
-In this package, I implemented 2 different estimations : a variational-bayes EM and a variational-EM.
+In this package, I implemented 2 different estimations : *a variational-bayes EM* and *a variational-EM*.
 The variational-bayes EM can be optimized in two ways : setting the lagrangian to zero, 
 referred to as the **VBEM** algorithm, or using a natural-conjugate gradient method,
 referred to as the **NCG** algorithm.
