@@ -1,4 +1,4 @@
-from .utils import init
+from src.utils import init
 import time
 
 
@@ -10,7 +10,7 @@ def sbm(A,
         tol=1e-6,
         max_iter=50,
         type_init='random',
-        random_gen=None,
+        seed=123,
         verbose=True):
     """
     Stochastic Block Model inference using either a variational-bayes EM with coordinate ascent optimisation (VBEM)
@@ -31,7 +31,7 @@ def sbm(A,
     count = 0
     t = 0
     c = 1
-    epsilon = np.finfo(np.float64).tiny
+    epsilon = np.finfo(np.float64).eps
     A_tilde = np.ones_like(A) - A - np.eye(A.shape[0])
 
     L_old = - np.inf
@@ -43,6 +43,7 @@ def sbm(A,
     old_direction = 0
     BREAK = False
 
+    random_gen = np.random.default_rng(seed=seed)
 
     #######################
     ####### INIT
@@ -51,10 +52,11 @@ def sbm(A,
     if tau_init is None :
         tau_init = init(A=A,
                         Q=Q,
-                        eps=np.finfo(np.float64).tiny,
+                        eps=epsilon,
                         type_init=type_init,
                         random_gen=random_gen
                         )
+
     ############
     #### LOAD FUNCTION CORRESPONDING TO THE ALGO
     ############
