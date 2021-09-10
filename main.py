@@ -1,18 +1,25 @@
-from package.SBM import sbm
+from src.SBM import sbm
 import numpy as np
+
 from sklearn.metrics.cluster import adjusted_rand_score as ARI
-path = '/simulations/data/Scenario_C/Beta_0.21/'
-random_gen = np.random.default_rng(seed=123)
+from src import utils
 
-for k in range(20):
-    adj = np.load(path +  'Adj_7.npy')
-    cl = np.load(path + 'True_groups_7.npy')
-    elbo, tau, _, count, time_list = sbm(A=adj, Q=5,
-                                         max_iter=1000,
-                                         tau_init=None,
-                                         type_init='random',
-                                         random_gen=random_gen,
-                                         algo='vbem')
-    print('ARI : ', ARI(cl, tau.argmax(axis=1)))
+# Matrix of the probability connection between two clusters
+probability_mat = np.array([ [0.25,0.05,0.05],
+                             [0.05,0.25,0.05],
+                             [0.05,0.05,0.25]])
 
-#%%
+# Creation of the graph
+(adj, adj_tilde, graph, pos, node_groups) = utils.generation(probability_mat, seed=None, n_groups=3)
+
+# Estimation of the model (watch-out : it is difficult to recover from the random init !)
+elbo, tau, _, count, time_list = sbm(A=adj,
+                                     Q=3,
+                                     max_iter=200,
+                                     tau_init=None,
+                                     type_init='random',
+                                     seed=None,
+                                     tol=1e-6,
+                                     algo='vbem')
+
+print('ARI : ', ARI(node_groups, tau.argmax(axis=1)))

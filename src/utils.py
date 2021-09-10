@@ -117,7 +117,6 @@ def generation(probability_connection, random_gen = None, n_groups=5, n_nodes=10
     return (A, A_tilde, graph, pos, node_groups)
 
 
-
 def init(A, Q, eps, random_gen, type_init='kmeans'):
     import numpy as np
     from sklearn.cluster import KMeans
@@ -133,7 +132,8 @@ def init(A, Q, eps, random_gen, type_init='kmeans'):
     
     elif type_init == 'random':
         # Uniformly select a category for each node
-        tau = random_gen.multinomial(1, np.ones(Q)/Q, size=M).astype(np.float)
+        tau = random_gen.choice(Q, size=M)
+        tau = one_hot(tau, Q)
         tau += eps
         tau = tau / tau.sum(axis=1,keepdims=True)
 
