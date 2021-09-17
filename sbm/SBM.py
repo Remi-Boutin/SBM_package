@@ -1,4 +1,4 @@
-from src.utils import init
+from sbm.utils import init
 import time
 
 
