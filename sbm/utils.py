@@ -181,9 +181,7 @@ def get_real_params(Pi, M, Q, true_groups):
     return kappa, gamma
 
 
-def graph_database_creation(random_gen, path=None, n_repet=20, seed=2021):
-    if path is None:
-        path = 'C:/Users/remib/Documents/2021/SBM/Code/simulations/data/'
+def graph_database_creation(random_gen, path, n_repet=20, seed=2021):
     
     for scenario in ['A', 'B', 'C']:
         
@@ -287,9 +285,7 @@ def ETSBM_init(K, Q, DTM, A, topics=None, cluster=None):
 
 
 
-def load_data(scenario, beta, n, path=None):
-    if path is None:
-        path = 'C:/Users/remib/Documents/2021/SBM/Code/simulations/data/'
+def load_data(scenario, beta, n, path):
 
     beta_display = np.round(beta, 2)
     A = np.load(os.path.join(path + 'Scenario_' + scenario, 'Beta_' + str(beta_display), 'Adj_' + str(n) + '.npy'))
