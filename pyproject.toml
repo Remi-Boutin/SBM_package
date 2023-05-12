@@ -3,12 +3,12 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "SBM"
+name = "SBM_VBEM"
 version = "0.0.1"
 authors = [
   { name="Remi Boutin", email="remi.boutin.stat@gmail.com" },
 ]
-description = "Implementation of Stochastic Block Model with several inference strategy (VBEM, Natural conjugate gradients)"
+description = "Implementation of Stochastic Block Model with several inference strategy (VBEM, VEM, Natural conjugate gradients)"
 readme = "README.md"
 requires-python = ">=3.1"
 classifiers = [
@@ -29,4 +29,4 @@ exclude = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["sbm/"]
+packages = ["sbm_vbem/"]

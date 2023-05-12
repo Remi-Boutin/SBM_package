@@ -4,7 +4,7 @@
 
 To install this package, run 
 
-``python -m pip install ``
+``python -m pip install sbm-vbem``
 
 
 ## Quick use of the SBM function

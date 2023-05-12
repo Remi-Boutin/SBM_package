@@ -1,4 +1,4 @@
-from sbm.SBM import sbm
+from sbm_vbem.SBM import sbm
 import numpy as np
 
 from sklearn.metrics.cluster import adjusted_rand_score as ARI
