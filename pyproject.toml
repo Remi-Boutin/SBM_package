@@ -1,3 +1,32 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "SBM"
+version = "0.0.1"
+authors = [
+  { name="Remi Boutin", email="remi.boutin.stat@gmail.com" },
+]
+description = "Implementation of Stochastic Block Model with several inference strategy (VBEM, Natural conjugate gradients)"
+readme = "README.md"
+requires-python = ">=3.1"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+
+[project.urls]
+"Homepage" = "https://github.com/Remi-Boutin/SBM_package"
+"Bug Tracker" = "https://github.com/Remi-Boutin/SBM_package/issues"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/docs",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["sbm/"]

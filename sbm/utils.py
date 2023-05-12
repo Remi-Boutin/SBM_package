@@ -1,5 +1,6 @@
-import numpy as np
 import os
+os.environ['OMP_NUM_THREADS'] = '1'
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import adjusted_rand_score as ARI
 import networkx as nx
@@ -118,8 +119,12 @@ def generation(probability_connection, random_gen = None, n_groups=5, n_nodes=10
 
 
 def init(A, Q, eps, random_gen, type_init='kmeans'):
+    import os
+    os.environ["OMP_NUM_THREADS"] = '1'
+
     import numpy as np
     from sklearn.cluster import KMeans
+
     M = A.shape[0]
 
     if type_init == 'kmeans':
@@ -151,6 +156,7 @@ def plot(graph,
          compare_results=True):
     import matplotlib.pyplot as plt
     from networkx import draw
+
     """
     Plot either the results or the generated graph
     alpha = node and edge transparency
@@ -181,10 +187,9 @@ def get_real_params(Pi, M, Q, true_groups):
     return kappa, gamma
 
 
-def graph_database_creation(random_gen, path=None, n_repet=20, seed=2021):
-    if path is None:
-        path = 'C:/Users/remib/Documents/2021/SBM/Code/simulations/data/'
-    
+def graph_database_creation(random_gen, path, n_repet=20, seed=2021):
+    import numpy as np
+
     for scenario in ['A', 'B', 'C']:
         
         if not os.path.exists(os.path.join(path + 'Scenario_'+ scenario)):
@@ -219,85 +224,6 @@ def graph_database_creation(random_gen, path=None, n_repet=20, seed=2021):
                 np.save(os.path.join(path + 'Scenario_'+ scenario, 'Beta_' + str(beta_display), 'True_groups_'+ str(n) ), node_groups)
 
 
-def ETSBM_init(K, Q, DTM, A, topics=None, cluster=None):
-
-    import numpy as np
-    from scipy import sparse
-    from sklearn.decomposition import LatentDirichletAllocation
-    from sklearn.metrics import adjusted_rand_score as ARI
-    from sklearn.cluster import SpectralClustering, KMeans
-
-    #%%
-    # This produces a feature matrix of token counts, similar to what
-    # CountVectorizer would produce on text.
-
-    lda = LatentDirichletAllocation(n_components=K, max_iter=20)
-    lda.fit(DTM)
-
-    # get topics for some given samples:
-    theta = lda.transform(DTM)
-
-    print('Theta shape : ',theta.shape)
-    # Check that LDA works properly
-    if not topics is None:
-        print('ARI on edges :', ARI(topics, theta.argmax(axis=-1)))
-
-    model_clust = KMeans(Q)
-    model_clust.fit(A)
-
-    # Normalize theta by L2 norm for cosinus similarity
-    theta_norm = theta / np.sqrt((theta * theta).sum(axis=1, keepdims=True))
-
-    M = A.shape[0]
-    rows = []
-    cols = []
-    for j in range(M):
-        for i in range(M):
-            if A[i,j]!=0:
-                rows.append(i)
-                cols.append(j)
-
-    similarity =  sparse.csr_matrix( ( np.zeros(len(rows)), (rows, cols)))
-
-    for k in range(K):
-        T_k = sparse.csr_matrix( (theta_norm[:,k], (rows, cols)))
-        T_transpose = T_k.transpose()
-        similarity += T_k.dot(T_transpose) + T_transpose.dot(T_k)
-
-    print('Q = ', Q)
-    sp = SpectralClustering(Q, affinity="precomputed")
-    sp.fit(similarity)
-
-    if not cluster is None:
-        ordered_cluster = np.argsort(cluster)
-
-        print("Node ARI: ",ARI(model_clust.labels_,cluster))
-        print('ARI with cosine similiraty : ', ARI(cluster, sp.labels_))
-        sim = similarity.toarray()
-        # I take the opposite for better visualisation
-        plt.subplot(121)
-        plt.imshow((-sim[:,ordered_cluster])[ordered_cluster,:] )
-        plt.title('Cosine similarity')
-        plt.subplot(122)
-        plt.imshow((-A[:,ordered_cluster])[ordered_cluster,:])
-        plt.title('Adjacency matrix')
-        plt.show()
-
-    return similarity, sp.labels_
-
-
-
-def load_data(scenario, beta, n, path=None):
-    if path is None:
-        path = 'C:/Users/remib/Documents/2021/SBM/Code/simulations/data/'
-
-    beta_display = np.round(beta, 2)
-    A = np.load(os.path.join(path + 'Scenario_' + scenario, 'Beta_' + str(beta_display), 'Adj_' + str(n) + '.npy'))
-    A_tilde = np.ones((A.shape[0], A.shape[0])) - np.eye(A.shape[0]) - A
-    true_groups = np.load(
-        os.path.join(path + 'Scenario_' + scenario, 'Beta_' + str(beta_display), 'True_groups_' + str(n) + '.npy'))
-    return A, A_tilde, true_groups
-
 
 def plot_graph_results(graph, tau, tau_init, node_groups, elbo, pos):
     plt.figure(figsize=(18, 9))
@@ -326,6 +252,7 @@ def plot_graph_results(graph, tau, tau_init, node_groups, elbo, pos):
 
 
 def plot_ari(ari, labels, path=None, title=None, betas=np.arange(0.01, 0.42, 0.02), plot_uncertainty=True, scenarii=['A', 'B', 'C'], savefig=False):
+    import numpy as np
     fig, ax = plt.subplots(len(scenarii), 1, figsize=(8, 17))
     fig.patch.set_facecolor('white')
 

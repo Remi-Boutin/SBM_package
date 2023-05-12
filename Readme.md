@@ -1,4 +1,13 @@
-### SBM 
+# SBM package
+
+## Installation
+
+To install this package, run 
+
+``python -m pip install ``
+
+
+## Quick use of the SBM function
 
 In this package, I implemented 2 different estimations : *a variational-bayes EM (it's on the way)* and a variational-EM.
 The variational-bayes EM can be optimized in two ways : setting the lagrangian to zero, 
